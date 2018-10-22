@@ -1,26 +1,39 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
+import gql from "graphql-tag";
+import "./App.css";
+
+const client = new ApolloClient({
+  uri: "https://api-euwest.graphcms.com/v1/cjnkr52qc4hem01ghdn45lfye/master"
+});
+
+const testQuery = gql`
+  query {
+    posts {
+      id
+      createdAt
+      updatedAt
+      title
+      body
+    }
+  }
+`;
+
+client
+  .query({
+    query: testQuery
+  })
+  .then(res => console.log(res));
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <ApolloProvider client={client}>
+        <div className="App">
+          <h1>Hello World</h1>
+        </div>
+      </ApolloProvider>
     );
   }
 }
