@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider, Query } from "react-apollo";
 import gql from "graphql-tag";
 import "./App.css";
 
@@ -8,7 +8,7 @@ const client = new ApolloClient({
   uri: "https://api-euwest.graphcms.com/v1/cjnkr52qc4hem01ghdn45lfye/master"
 });
 
-const testQuery = gql`
+const POSTS_QUERY = gql`
   query {
     posts {
       id
@@ -20,18 +20,24 @@ const testQuery = gql`
   }
 `;
 
-client
-  .query({
-    query: testQuery
-  })
-  .then(res => console.log(res));
+// client
+//   .query({
+//     query: testQuery
+//   })
+//   .then(res => console.log(res));
 
 class App extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
         <div className="App">
-          <h1>Hello World</h1>
+          <Query query={POSTS_QUERY}>
+            {({ loading, data }) => {
+              if (loading) return "Loading...";
+              const { posts } = data;
+              return posts.map(post => <h1>{post.title}</h1>);
+            }}
+          </Query>
         </div>
       </ApolloProvider>
     );
